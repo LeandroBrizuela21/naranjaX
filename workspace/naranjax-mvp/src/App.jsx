@@ -397,9 +397,9 @@ function RankingScreen({ onBack }) {
       {/* Leaderboard List */}
       <div className="px-5 space-y-3 flex-1 pb-44">
         {[
-          { pos: 1, name: 'Manguito', pts: 3000, initial: 'P', color: 'text-[#cd7f32]' },
+          { pos: 1, name: 'PEPE', pts: 3000, initial: 'P', color: 'text-[#cd7f32]' },
           { pos: 2, name: 'Pablo', pts: 2999, initial: 'P', color: 'text-gray-400' },
-          { pos: 3, name: 'Pedro', pts: 2998, initial: 'U', color: 'text-[#8b5a2b]' }
+          { pos: 3, name: 'Usuario_3', pts: 2998, initial: 'U', color: 'text-[#8b5a2b]' }
         ].map((user, idx) => (
           <div key={idx} className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center shadow-sm">
             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold mr-3 ${idx === 0 ? 'bg-naranja-500' : 'bg-gray-400'}`}>
@@ -455,7 +455,7 @@ function RankingScreen({ onBack }) {
                   <span className="text-[10px]">🥭</span>
                 </div>
               </div>
-              <span className="text-gray-600 text-sm font-medium">Manguitos</span>
+              <span className="text-gray-600 text-sm font-medium">Puntos</span>
             </div>
           </div>
         </div>
