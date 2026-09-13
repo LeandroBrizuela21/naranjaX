@@ -18,11 +18,22 @@ import {
   Utensils,
   Shirt,
   QrCode,
-  MoreHorizontal
+  MoreHorizontal,
+  User,
+  Users,
+  Store,
+  Percent,
+  Gift,
+  PiggyBank,
+  ShieldCheck,
+  Gauge,
+  HandCoins,
+  Luggage
 } from 'lucide-react';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
+  const [showMaintenance, setShowMaintenance] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 font-sans">
@@ -41,7 +52,7 @@ export default function App() {
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto pb-28 scrollbar-hide">
           {currentScreen === 'home' && (
-            <HomeScreen onNavigate={() => setCurrentScreen('manguitos')} />
+            <HomeScreen onNavigate={() => setCurrentScreen('manguitos')} onShowMaintenance={() => setShowMaintenance(true)} />
           )}
           {currentScreen === 'manguitos' && (
             <ManguitosScreen
@@ -52,7 +63,32 @@ export default function App() {
           {currentScreen === 'ranking' && (
             <RankingScreen onBack={() => setCurrentScreen('manguitos')} />
           )}
+          {currentScreen === 'mas' && (
+            <MasScreen />
+          )}
+          {currentScreen === 'tarjetas' && (
+            <TarjetasScreen />
+          )}
         </div>
+
+        {/* Maintenance Popup */}
+        {showMaintenance && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center p-6 bg-gray-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white rounded-[28px] p-6 shadow-2xl w-full max-w-sm flex flex-col items-center text-center animate-in zoom-in-95 duration-200 border border-gray-100">
+              <div className="w-16 h-16 bg-orange-50 text-naranja-500 rounded-full flex items-center justify-center mb-4 shadow-inner border border-orange-100">
+                <HelpCircle size={32} strokeWidth={2.5} />
+              </div>
+              <h3 className="text-gray-800 text-xl font-black mb-2 tracking-tight">En mantenimiento</h3>
+              <p className="text-gray-600 text-[15px] mb-6 font-medium leading-tight">Estamos trabajando en esta sección para ofrecerte una mejor experiencia. ¡Volvé pronto!</p>
+              <button 
+                onClick={() => setShowMaintenance(false)}
+                className="w-full bg-naranja-500 text-white font-bold py-3.5 rounded-2xl hover:bg-[#e54519] active:scale-[0.98] transition-all shadow-md shadow-naranja-500/30"
+              >
+                Entendido
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Bottom Navigation */}
         <div className="absolute bottom-0 w-full bg-white border-t border-gray-200 px-6 py-4 flex justify-between items-center pb-8 rounded-b-[28px] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] z-20">
@@ -60,22 +96,22 @@ export default function App() {
             <Home size={24} className="mb-1" strokeWidth={2.5} />
             <span className="text-[10px] font-bold">Inicio</span>
           </button>
-          <button className="flex flex-col items-center text-gray-400 hover:text-gray-600 transition-colors">
+          <button className="flex flex-col items-center text-gray-400 hover:text-gray-600 transition-colors" onClick={() => setShowMaintenance(true)}>
             <Activity size={24} className="mb-1" strokeWidth={2.5} />
             <span className="text-[10px] font-bold">Cuentas</span>
           </button>
 
           <div className="relative -top-5">
-            <button className="w-14 h-14 bg-naranja-500 rounded-full flex items-center justify-center shadow-lg shadow-naranja-500/40 text-white hover:scale-105 active:scale-95 transition-all">
+            <button onClick={() => setShowMaintenance(true)} className="w-14 h-14 bg-naranja-500 rounded-full flex items-center justify-center shadow-lg shadow-naranja-500/40 text-white hover:scale-105 active:scale-95 transition-all">
               <ScanLine size={28} strokeWidth={2.5} />
             </button>
           </div>
 
-          <button className="flex flex-col items-center text-gray-400 hover:text-gray-600 transition-colors">
+          <button className={`flex flex-col items-center transition-colors ${currentScreen === 'tarjetas' ? 'text-purple-900' : 'text-gray-400 hover:text-gray-600'}`} onClick={() => setCurrentScreen('tarjetas')}>
             <CreditCard size={24} className="mb-1" strokeWidth={2.5} />
             <span className="text-[10px] font-bold">Tarjetas</span>
           </button>
-          <button className="flex flex-col items-center text-gray-400 hover:text-gray-600 transition-colors">
+          <button className={`flex flex-col items-center transition-colors ${currentScreen === 'mas' ? 'text-purple-900' : 'text-gray-400 hover:text-gray-600'}`} onClick={() => setCurrentScreen('mas')}>
             <LayoutGrid size={24} className="mb-1" strokeWidth={2.5} />
             <span className="text-[10px] font-bold">Más</span>
           </button>
@@ -85,7 +121,7 @@ export default function App() {
   );
 }
 
-function HomeScreen({ onNavigate }) {
+function HomeScreen({ onNavigate, onShowMaintenance }) {
   const [showBalance, setShowBalance] = useState(true);
 
   return (
@@ -99,11 +135,11 @@ function HomeScreen({ onNavigate }) {
           <h1 className="text-gray-800 text-lg">Hola <span className="font-bold text-xl">Jose</span>,</h1>
         </div>
         <div className="flex items-center space-x-3">
-          <div className="relative cursor-pointer hover:scale-105 transition-transform">
+          <div className="relative cursor-pointer hover:scale-105 transition-transform" onClick={onShowMaintenance}>
             <Bell size={24} className="text-gray-800" />
             <span className="absolute -top-1 -right-1 bg-naranja-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">7</span>
           </div>
-          <button className="flex items-center space-x-1 bg-purple-100/50 text-purple-900 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-purple-100 transition-colors">
+          <button onClick={onShowMaintenance} className="flex items-center space-x-1 bg-purple-100/50 text-purple-900 px-3 py-1.5 rounded-full text-sm font-bold hover:bg-purple-100 transition-colors">
             <HelpCircle size={16} />
             <span>Ayuda</span>
           </button>
@@ -120,7 +156,7 @@ function HomeScreen({ onNavigate }) {
               Cuenta en pesos
               <span className="text-green-600 ml-2 bg-green-100 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">+19%</span>
             </span>
-            <ChevronRight size={20} className="text-naranja-500 cursor-pointer" />
+            <ChevronRight size={20} className="text-naranja-500 cursor-pointer" onClick={onShowMaintenance} />
           </div>
           <div className="flex items-center space-x-3 mb-8 relative z-10">
             <span className="text-gray-800 text-[32px] font-black tracking-tight">
@@ -133,19 +169,19 @@ function HomeScreen({ onNavigate }) {
 
           {/* Quick Actions */}
           <div className="flex justify-between relative z-10 px-2">
-            <button className="flex flex-col items-center group">
+            <button className="flex flex-col items-center group" onClick={onShowMaintenance}>
               <div className="w-14 h-14 rounded-full bg-purple-50 group-hover:bg-purple-100 transition-colors flex items-center justify-center text-purple-700 mb-2 shadow-sm">
                 <ArrowUp size={24} strokeWidth={2.5} />
               </div>
               <span className="text-xs text-gray-700 font-bold">Agregar</span>
             </button>
-            <button className="flex flex-col items-center group">
+            <button className="flex flex-col items-center group" onClick={onShowMaintenance}>
               <div className="w-14 h-14 rounded-full bg-purple-50 group-hover:bg-purple-100 transition-colors flex items-center justify-center text-purple-700 mb-2 shadow-sm">
                 <ArrowRightLeft size={24} strokeWidth={2.5} />
               </div>
               <span className="text-xs text-gray-700 font-bold">Transferir</span>
             </button>
-            <button className="flex flex-col items-center group">
+            <button className="flex flex-col items-center group" onClick={onShowMaintenance}>
               <div className="w-14 h-14 rounded-full bg-purple-50 group-hover:bg-purple-100 transition-colors flex items-center justify-center text-purple-700 mb-2 shadow-sm">
                 <CreditCard size={24} strokeWidth={2.5} />
               </div>
@@ -178,11 +214,11 @@ function HomeScreen({ onNavigate }) {
         {/* Shortcuts */}
         <div className="mt-8 mb-4 flex justify-between items-center">
           <h3 className="text-gray-800 font-bold text-lg">Tus atajos</h3>
-          <span className="text-purple-800 text-sm font-bold cursor-pointer hover:underline">Conocer más</span>
+          <span className="text-purple-800 text-sm font-bold cursor-pointer hover:underline" onClick={onShowMaintenance}>Conocer más</span>
         </div>
         <div className="grid grid-cols-4 gap-y-6 gap-x-2">
           {['Préstamos', 'Frascos', 'Dólares', 'Cobrar'].map((item, i) => (
-            <div key={i} className="flex flex-col items-center cursor-pointer group">
+            <div key={i} className="flex flex-col items-center cursor-pointer group" onClick={onShowMaintenance}>
               <div className="w-[60px] h-[60px] bg-white rounded-2xl shadow-sm group-hover:shadow-md transition-shadow flex items-center justify-center text-purple-800 mb-2 border border-gray-100 relative">
                 {i === 1 && <span className="absolute -top-2 bg-naranja-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm">20%</span>}
                 <CreditCard size={28} strokeWidth={2} className="group-hover:scale-110 transition-transform" />
@@ -191,7 +227,7 @@ function HomeScreen({ onNavigate }) {
             </div>
           ))}
           {['Servicios', 'Recargas', 'QR subte', 'Seguros'].map((item, i) => (
-            <div key={i + 4} className="flex flex-col items-center cursor-pointer group">
+            <div key={i + 4} className="flex flex-col items-center cursor-pointer group" onClick={onShowMaintenance}>
               <div className="w-[60px] h-[60px] bg-white rounded-2xl shadow-sm group-hover:shadow-md transition-shadow flex items-center justify-center text-purple-800 mb-2 border border-gray-100">
                 <LayoutGrid size={28} strokeWidth={2} className="group-hover:scale-110 transition-transform" />
               </div>
@@ -461,6 +497,94 @@ function RankingScreen({ onBack }) {
         </div>
       </div>
 
+    </div>
+  );
+}
+
+function MasScreen() {
+  const menuItems = [
+    { icon: User, label: 'Perfil' },
+    { icon: Users, label: 'Cuentas compartidas', badge: 'Nuevo' },
+    { icon: Store, label: 'Negocio' },
+    { icon: Percent, label: 'Promociones' },
+    { icon: Gift, label: 'Beneficios', badge: 'Nuevo' },
+    { icon: PiggyBank, label: 'Frascos' },
+    { icon: ShieldCheck, label: 'Seguros' },
+    { icon: Gauge, label: 'Tu perfil crediticio' },
+    { icon: HandCoins, label: 'Préstamos' },
+    { icon: Luggage, label: 'Viajes Naranja X' },
+  ];
+
+  return (
+    <div className="animate-in fade-in duration-300 pb-20 bg-white min-h-full">
+      {/* Header Profile */}
+      <div className="px-5 pt-10 pb-6 flex items-center space-x-4 border-b border-gray-100">
+        <div className="w-[56px] h-[56px] bg-purple-50 rounded-2xl flex items-center justify-center text-purple-900 font-bold text-xl">
+          J
+        </div>
+        <h2 className="text-gray-800 text-lg font-bold">José</h2>
+      </div>
+
+      {/* Menu Items */}
+      <div className="px-5 mt-2">
+        {menuItems.map((item, index) => (
+          <div key={index} className="flex items-center justify-between py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors">
+            <div className="flex items-center space-x-4">
+              <item.icon size={24} className="text-gray-700" strokeWidth={1.5} />
+              <span className="text-gray-800 font-bold text-[15px]">{item.label}</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              {item.badge && (
+                <span className="bg-[#e54519] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                  {item.badge}
+                </span>
+              )}
+              <ChevronRight size={20} className="text-purple-800" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TarjetasScreen() {
+  return (
+    <div className="animate-in fade-in duration-300 pb-20 bg-white min-h-full">
+      {/* Header */}
+      <div className="px-5 pt-8 pb-4">
+        <h1 className="text-gray-800 text-[28px] font-black tracking-tight">Tus tarjetas</h1>
+      </div>
+
+      <div className="px-5 space-y-4">
+        {/* Débito */}
+        <div className="bg-purple-50 rounded-[28px] p-4 flex items-center shadow-sm border border-purple-100 cursor-pointer hover:shadow-md transition-shadow">
+          <div className="w-[84px] h-[116px] bg-[#530e8c] rounded-2xl relative overflow-hidden flex-shrink-0 shadow-sm mr-5">
+            <div className="absolute top-3 left-3 text-white font-bold text-[10px]">NX Débito</div>
+            <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-white/10 rounded-full blur-xl"></div>
+            <div className="absolute top-1/2 left-1/2 w-[120%] h-[1px] bg-white/20 transform -rotate-45"></div>
+            <div className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-white/40 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-gray-800 font-bold text-lg mb-0.5">Débito</h3>
+            <p className="text-gray-700 text-sm">Usala con tu dinero en cuenta.</p>
+          </div>
+        </div>
+
+        {/* Crédito */}
+        <div className="bg-orange-50 rounded-[28px] p-4 flex items-center shadow-sm border border-orange-100 cursor-pointer hover:shadow-md transition-shadow">
+          <div className="w-[84px] h-[116px] bg-[#ff6200] rounded-2xl relative overflow-hidden flex-shrink-0 shadow-sm mr-5">
+            <div className="absolute top-3 left-3 text-white font-bold text-[10px]">NX Crédito</div>
+            <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-white/10 rounded-full blur-xl"></div>
+            <div className="absolute top-1/2 left-1/2 w-[120%] h-[1px] bg-white/30 transform -rotate-45"></div>
+            <div className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-white/60 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-gray-800 font-bold text-lg mb-0.5">Crédito</h3>
+            <p className="text-gray-700 text-sm">Consultá si podés pedirlas.</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
