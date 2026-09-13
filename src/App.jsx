@@ -35,6 +35,7 @@ import {
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
   const [showMaintenance, setShowMaintenance] = useState(false);
+  const [showNotEnough, setShowNotEnough] = useState(false);
   const [manguitos, setManguitos] = useState(500);
 
   return (
@@ -62,6 +63,7 @@ export default function App() {
               onNavigate={(screen) => setCurrentScreen(screen)}
               manguitos={manguitos}
               setManguitos={setManguitos}
+              onShowNotEnough={() => setShowNotEnough(true)}
             />
           )}
           {currentScreen === 'ranking' && (
@@ -75,6 +77,25 @@ export default function App() {
           )}
         </div>
 
+        {/* Not Enough Manguitos Popup */}
+        {showNotEnough && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center p-6 bg-gray-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white rounded-[28px] p-6 shadow-2xl w-full max-w-sm flex flex-col items-center text-center animate-in zoom-in-95 duration-200 border border-gray-100">
+              <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4 shadow-inner border border-red-100">
+                <span className="text-3xl filter grayscale opacity-50">🥭</span>
+              </div>
+              <h3 className="text-gray-800 text-xl font-black mb-2 tracking-tight">¡Casi casi!</h3>
+              <p className="text-gray-600 text-[15px] mb-6 font-medium leading-tight">Todavía no tenés los manguitos necesarios para este beneficio. </p>
+              <button
+                onClick={() => setShowNotEnough(false)}
+                className="w-full bg-naranja-500 text-white font-bold py-3.5 rounded-2xl hover:bg-[#e54519] active:scale-[0.98] transition-all shadow-md shadow-naranja-500/30"
+              >
+                Entendido
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Maintenance Popup */}
         {showMaintenance && (
           <div className="absolute inset-0 z-50 flex items-center justify-center p-6 bg-gray-900/40 backdrop-blur-sm animate-in fade-in duration-200">
@@ -84,7 +105,7 @@ export default function App() {
               </div>
               <h3 className="text-gray-800 text-xl font-black mb-2 tracking-tight">En mantenimiento</h3>
               <p className="text-gray-600 text-[15px] mb-6 font-medium leading-tight">Estamos trabajando en esta sección para ofrecerte una mejor experiencia. ¡Volvé pronto!</p>
-              <button 
+              <button
                 onClick={() => setShowMaintenance(false)}
                 className="w-full bg-naranja-500 text-white font-bold py-3.5 rounded-2xl hover:bg-[#e54519] active:scale-[0.98] transition-all shadow-md shadow-naranja-500/30"
               >
@@ -245,7 +266,7 @@ function HomeScreen({ onNavigate, onShowMaintenance, manguitos }) {
   );
 }
 
-function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos }) {
+function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos, onShowNotEnough }) {
   const [missions, setMissions] = useState([
     { id: 1, title: 'Pagar con QR', goal: 5000, current: 5000, reward: 5, claimed: false },
     { id: 2, title: 'Transferir', goal: 10000, current: 4000, reward: 10, claimed: false },
@@ -256,7 +277,7 @@ function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos }) {
   const handleClaim = (mission) => {
     if (mission.current >= mission.goal && !mission.claimed) {
       setAnimatingId(mission.id);
-      
+
       setTimeout(() => {
         setManguitos(prev => prev + mission.reward);
         setMissions(missions.map(m => m.id === mission.id ? { ...m, claimed: true } : m));
@@ -314,17 +335,17 @@ function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos }) {
           {missions.map((mission) => {
             const isCompleted = mission.current >= mission.goal;
             const isAnimating = animatingId === mission.id;
-            
+
             return (
-              <div 
-                key={mission.id} 
+              <div
+                key={mission.id}
                 className={`bg-white rounded-[16px] p-2.5 flex items-center shadow-sm border ${isCompleted && !mission.claimed ? 'border-naranja-500/50 hover:shadow-md' : 'border-gray-100'} transition-all cursor-pointer relative overflow-hidden`}
                 onClick={() => handleClaim(mission)}
               >
                 {isCompleted && !mission.claimed && (
                   <div className="absolute inset-0 bg-naranja-500/5 animate-pulse"></div>
                 )}
-                
+
                 <div className={`bg-gray-50 p-2 rounded-xl mr-3 border border-gray-100 relative z-10 ${isCompleted && !mission.claimed ? 'text-naranja-500' : 'text-gray-800'}`}>
                   <QrCode size={20} strokeWidth={2} />
                 </div>
@@ -335,14 +356,13 @@ function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos }) {
                   </div>
                   <span className="text-[9px] font-black text-gray-400">{mission.current} / {mission.goal} $</span>
                 </div>
-                
-                <div className={`ml-3 w-11 h-11 rounded-full flex flex-col items-center justify-center text-white shrink-0 relative z-10 transition-all duration-500 ${
-                  mission.claimed 
-                    ? 'bg-green-500 scale-95' 
-                    : isCompleted 
-                      ? 'bg-naranja-500 shadow-md shadow-naranja-500/40 animate-bounce' 
-                      : 'bg-gray-300'
-                }`}>
+
+                <div className={`ml-3 w-11 h-11 rounded-full flex flex-col items-center justify-center text-white shrink-0 relative z-10 transition-all duration-500 ${mission.claimed
+                  ? 'bg-green-500 scale-95'
+                  : isCompleted
+                    ? 'bg-naranja-500 shadow-md shadow-naranja-500/40 animate-bounce'
+                    : 'bg-gray-300'
+                  }`}>
                   {isAnimating ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                   ) : mission.claimed ? (
@@ -354,7 +374,7 @@ function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos }) {
                     </>
                   )}
                 </div>
-                
+
                 {/* Floating mango animation */}
                 {isAnimating && (
                   <div className="absolute right-4 top-0 animate-[ping_0.6s_cubic-bezier(0,0,0.2,1)_forwards] text-2xl z-20">
@@ -369,7 +389,7 @@ function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos }) {
         {/* Benefits Carousel */}
         <h3 className="text-gray-800 font-black text-lg mb-2 tracking-tight uppercase">Aumenta tus Beneficios</h3>
         <div className="flex overflow-x-auto space-x-4 pb-6 scrollbar-hide -mx-5 px-5">
-          <div className="min-w-[290px] bg-white rounded-3xl p-5 shadow-md border border-gray-100 flex items-center transform transition-transform hover:scale-[1.02] cursor-pointer">
+          <div className="min-w-[290px] bg-white rounded-3xl p-5 shadow-md border border-gray-100 flex items-center transform transition-transform hover:scale-[1.02] cursor-pointer" onClick={onShowNotEnough}>
             <div className="w-[72px] h-[72px] bg-[#E3000F] rounded-2xl flex items-center justify-center text-[#FFC72C] font-black text-4xl mr-4 shadow-sm shrink-0">
               M
             </div>
@@ -424,7 +444,7 @@ function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos }) {
               { name: 'Farmacity', discount: '+10%', cost: '5000', icon: '💊' },
               { name: 'Cinepolis', discount: '2x1', cost: '15000', icon: '🍿' },
             ].map((item, i) => (
-              <div key={i} className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center hover:shadow-md transition-all cursor-pointer group">
+              <div key={i} className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center hover:shadow-md transition-all cursor-pointer group" onClick={onShowNotEnough}>
                 <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center text-3xl mb-3 border border-gray-100 shadow-inner group-hover:scale-110 transition-transform">
                   {item.icon}
                 </div>
