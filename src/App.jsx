@@ -277,7 +277,7 @@ function ManguitosScreen({ onBack, onNavigate }) {
         </div>
 
         {/* Benefits Carousel */}
-        <h3 className="text-gray-800 font-black text-lg mb-2 tracking-tight uppercase">Beneficios</h3>
+        <h3 className="text-gray-800 font-black text-lg mb-2 tracking-tight uppercase">Aumenta tus Beneficios</h3>
         <div className="flex overflow-x-auto space-x-4 pb-6 scrollbar-hide -mx-5 px-5">
           <div className="min-w-[290px] bg-white rounded-3xl p-5 shadow-md border border-gray-100 flex items-center transform transition-transform hover:scale-[1.02] cursor-pointer">
             <div className="w-[72px] h-[72px] bg-[#E3000F] rounded-2xl flex items-center justify-center text-[#FFC72C] font-black text-4xl mr-4 shadow-sm shrink-0">
@@ -285,7 +285,7 @@ function ManguitosScreen({ onBack, onNavigate }) {
             </div>
             <div className="flex-1">
               <h4 className="font-black text-gray-800 text-lg leading-none mb-1 tracking-tight">McDonald's</h4>
-              <p className="text-[12px] font-black text-naranja-500 uppercase tracking-widest mb-2">20% de descuento</p>
+              <p className="text-[12px] font-black text-naranja-500 uppercase tracking-widest mb-2">+10% de descuento</p>
               <div className="bg-gray-50 inline-flex items-center px-3 py-1.5 rounded-xl border border-gray-200">
                 <span className="text-xs font-black text-gray-800 mr-1">10000$</span>
                 <span className="text-sm">🥭</span>
@@ -329,9 +329,9 @@ function ManguitosScreen({ onBack, onNavigate }) {
 
           <div className="grid grid-cols-2 gap-4">
             {[
-              { name: 'Café Martínez', discount: '10%', cost: '8000', icon: '☕' },
-              { name: 'YPF', discount: '15%', cost: '12000', icon: '⛽' },
-              { name: 'Farmacity', discount: '10%', cost: '5000', icon: '💊' },
+              { name: 'Café Martínez', discount: '+10%', cost: '8000', icon: '☕' },
+              { name: 'YPF', discount: '+15%', cost: '12000', icon: '⛽' },
+              { name: 'Farmacity', discount: '+10%', cost: '5000', icon: '💊' },
               { name: 'Cinepolis', discount: '2x1', cost: '15000', icon: '🍿' },
             ].map((item, i) => (
               <div key={i} className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center hover:shadow-md transition-all cursor-pointer group">
@@ -339,7 +339,7 @@ function ManguitosScreen({ onBack, onNavigate }) {
                   {item.icon}
                 </div>
                 <h4 className="font-bold text-gray-800 text-[13px] mb-1.5 leading-tight">{item.name}</h4>
-                <p className="text-[15px] font-black text-naranja-500 mb-3 tracking-tight">{item.discount} <span className="text-[10px] uppercase tracking-widest text-gray-500">OFF</span></p>
+                <p className="text-[15px] font-black text-naranja-500 mb-3 tracking-tight">{item.discount} <span className="text-[10px] uppercase tracking-widest text-gray-500"></span></p>
                 <div className="bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-xl w-full flex items-center justify-center">
                   <span className="text-xs font-black text-gray-800 mr-1">{item.cost}$</span>
                   <span className="text-xs">🥭</span>
