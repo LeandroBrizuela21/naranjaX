@@ -64,7 +64,7 @@ export default function App() {
             <RankingScreen onBack={() => setCurrentScreen('manguitos')} />
           )}
           {currentScreen === 'mas' && (
-            <MasScreen />
+            <MasScreen onShowMaintenance={() => setShowMaintenance(true)} />
           )}
           {currentScreen === 'tarjetas' && (
             <TarjetasScreen />
@@ -501,7 +501,7 @@ function RankingScreen({ onBack }) {
   );
 }
 
-function MasScreen() {
+function MasScreen({ onShowMaintenance }) {
   const menuItems = [
     { icon: User, label: 'Perfil' },
     { icon: Users, label: 'Cuentas compartidas', badge: 'Nuevo' },
@@ -528,7 +528,7 @@ function MasScreen() {
       {/* Menu Items */}
       <div className="px-5 mt-2">
         {menuItems.map((item, index) => (
-          <div key={index} className="flex items-center justify-between py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors">
+          <div key={index} className="flex items-center justify-between py-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors" onClick={onShowMaintenance}>
             <div className="flex items-center space-x-4">
               <item.icon size={24} className="text-gray-700" strokeWidth={1.5} />
               <span className="text-gray-800 font-bold text-[15px]">{item.label}</span>
