@@ -29,7 +29,9 @@ import {
   Gauge,
   HandCoins,
   Luggage,
-  Check
+  Check,
+  ShoppingCart,
+  Car
 } from 'lucide-react';
 
 export default function App() {
@@ -85,7 +87,8 @@ export default function App() {
                 <span className="text-3xl filter grayscale opacity-50">🥭</span>
               </div>
               <h3 className="text-gray-800 text-xl font-black mb-2 tracking-tight">¡Casi casi!</h3>
-              <p className="text-gray-600 text-[15px] mb-6 font-medium leading-tight">Todavía no tenés los manguitos necesarios para este beneficio. </p>
+              <p className="text-gray-600 text-[15px] mb-6 font-medium leading-tight">Todavía no tenés los manguitos necesarios para este beneficio.
+                <br /> ¡A realizar misiones!</p>
               <button
                 onClick={() => setShowNotEnough(false)}
                 className="w-full bg-naranja-500 text-white font-bold py-3.5 rounded-2xl hover:bg-[#e54519] active:scale-[0.98] transition-all shadow-md shadow-naranja-500/30"
@@ -267,6 +270,13 @@ function HomeScreen({ onNavigate, onShowMaintenance, manguitos }) {
 }
 
 function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos, onShowNotEnough }) {
+  const beneficiosCarousel = [
+    { name: "McDonald's", promo: '10% de descuento', cost: '10000', initial: 'M', bg: 'bg-[#E3000F]', iconColor: 'text-[#FFC72C]' },
+    { name: 'Carrefour', promo: '15% de descuento', cost: '5000', icon: ShoppingCart, bg: 'bg-blue-600', iconColor: 'text-white' },
+    { name: 'Cabify', promo: '30% de descuento', cost: '8000', icon: Car, bg: 'bg-purple-600', iconColor: 'text-white' },
+    { name: 'Pertutti', promo: '20% de reintegro', cost: '12000', icon: Utensils, bg: 'bg-red-50', iconColor: 'text-red-800' },
+  ];
+
   const [missions, setMissions] = useState([
     { id: 1, title: 'Pagar con QR', goal: 5000, current: 5000, reward: 5, claimed: false },
     { id: 2, title: 'Transferir', goal: 10000, current: 4000, reward: 10, claimed: false },
@@ -389,30 +399,21 @@ function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos, onShowNo
         {/* Benefits Carousel */}
         <h3 className="text-gray-800 font-black text-lg mb-2 tracking-tight uppercase">Aumenta tus Beneficios</h3>
         <div className="flex overflow-x-auto space-x-4 pb-6 scrollbar-hide -mx-5 px-5">
-          <div className="min-w-[290px] bg-white rounded-3xl p-5 shadow-md border border-gray-100 flex items-center transform transition-transform hover:scale-[1.02] cursor-pointer" onClick={onShowNotEnough}>
-            <div className="w-[72px] h-[72px] bg-[#E3000F] rounded-2xl flex items-center justify-center text-[#FFC72C] font-black text-4xl mr-4 shadow-sm shrink-0">
-              M
-            </div>
-            <div className="flex-1">
-              <h4 className="font-black text-gray-800 text-lg leading-none mb-1 tracking-tight">McDonald's</h4>
-              <p className="text-[12px] font-black text-naranja-500 uppercase tracking-widest mb-2">+10% de descuento</p>
-              <div className="bg-gray-50 inline-flex items-center px-3 py-1.5 rounded-xl border border-gray-200">
-                <span className="text-xs font-black text-gray-800 mr-1">10000$</span>
-                <span className="text-sm">🥭</span>
+          {beneficiosCarousel.map((item, idx) => (
+            <div key={idx} className="min-w-[290px] bg-white rounded-3xl p-5 shadow-md border border-gray-100 flex items-center transform transition-transform hover:scale-[1.02] cursor-pointer" onClick={onShowNotEnough}>
+              <div className={`w-[72px] h-[72px] ${item.bg} rounded-2xl flex items-center justify-center ${item.iconColor} font-black text-4xl mr-4 shadow-sm shrink-0`}>
+                {item.initial ? item.initial : <item.icon size={36} strokeWidth={2.5} />}
+              </div>
+              <div className="flex-1">
+                <h4 className="font-black text-gray-800 text-lg leading-none mb-1 tracking-tight">{item.name}</h4>
+                <p className="text-[12px] font-black text-naranja-500 uppercase tracking-widest mb-2">{item.promo}</p>
+                <div className="bg-gray-50 inline-flex items-center px-3 py-1.5 rounded-xl border border-gray-200">
+                  <span className="text-xs font-black text-gray-800 mr-1">{item.cost}</span>
+                  <span className="text-sm">🥭</span>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="min-w-[290px] bg-white rounded-3xl p-5 shadow-sm border border-gray-100 flex items-center opacity-60">
-            <div className="w-[72px] h-[72px] bg-blue-100 rounded-2xl mr-4 shrink-0 flex items-center justify-center">
-              <Plane className="text-blue-500" size={32} />
-            </div>
-            <div className="flex-1">
-              <div className="h-5 bg-gray-200 rounded-md w-3/4 mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded-md w-1/2 mb-3"></div>
-              <div className="h-7 bg-gray-200 rounded-xl w-1/3"></div>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Categories Grid */}
