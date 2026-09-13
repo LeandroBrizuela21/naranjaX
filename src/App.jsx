@@ -38,7 +38,7 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
   const [showMaintenance, setShowMaintenance] = useState(false);
   const [showNotEnough, setShowNotEnough] = useState(false);
-  const [manguitos, setManguitos] = useState(500);
+  const [manguitos, setManguitos] = useState(150);
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 font-sans">
@@ -271,16 +271,16 @@ function HomeScreen({ onNavigate, onShowMaintenance, manguitos }) {
 
 function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos, onShowNotEnough }) {
   const beneficiosCarousel = [
-    { name: "McDonald's", promo: '10% de descuento', cost: '10000', initial: 'M', bg: 'bg-[#E3000F]', iconColor: 'text-[#FFC72C]' },
-    { name: 'Carrefour', promo: '15% de descuento', cost: '5000', icon: ShoppingCart, bg: 'bg-blue-600', iconColor: 'text-white' },
-    { name: 'Cabify', promo: '30% de descuento', cost: '8000', icon: Car, bg: 'bg-purple-600', iconColor: 'text-white' },
-    { name: 'Pertutti', promo: '20% de reintegro', cost: '12000', icon: Utensils, bg: 'bg-red-50', iconColor: 'text-red-800' },
+    { name: "McDonald's", promo: '10% de descuento', cost: '400', initial: 'M', bg: 'bg-[#E3000F]', iconColor: 'text-[#FFC72C]' },
+    { name: 'Carrefour', promo: '15% de descuento', cost: '450', icon: ShoppingCart, bg: 'bg-blue-600', iconColor: 'text-white' },
+    { name: 'Cabify', promo: '30% de descuento', cost: '600', icon: Car, bg: 'bg-purple-600', iconColor: 'text-white' },
+    { name: 'Pertutti', promo: '20% de reintegro', cost: '550', icon: Utensils, bg: 'bg-red-50', iconColor: 'text-red-800' },
   ];
 
   const [missions, setMissions] = useState([
-    { id: 1, title: 'Pagar con QR', goal: 5000, current: 5000, reward: 5, claimed: false },
-    { id: 2, title: 'Transferir', goal: 10000, current: 4000, reward: 10, claimed: false },
-    { id: 3, title: 'Ingresar dinero', goal: 15000, current: 0, reward: 15, claimed: false },
+    { id: 1, title: 'Pagar con QR', goal: 5000, current: 5000, reward: 15, claimed: false },
+    { id: 2, title: 'Transferir', goal: 10000, current: 4000, reward: 30, claimed: false },
+    { id: 3, title: 'Ingresar dinero', goal: 15000, current: 0, reward: 500, claimed: false },
   ]);
   const [animatingId, setAnimatingId] = useState(null);
 
@@ -440,10 +440,10 @@ function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos, onShowNo
 
           <div className="grid grid-cols-2 gap-4">
             {[
-              { name: 'Café Martínez', discount: '+10%', cost: '8000', icon: '☕' },
-              { name: 'YPF', discount: '+15%', cost: '12000', icon: '⛽' },
-              { name: 'Farmacity', discount: '+10%', cost: '5000', icon: '💊' },
-              { name: 'Cinepolis', discount: '2x1', cost: '15000', icon: '🍿' },
+              { name: 'Café Martínez', discount: '+10%', cost: '300', icon: '☕' },
+              { name: 'YPF', discount: '+15%', cost: '500', icon: '⛽' },
+              { name: 'Farmacity', discount: '+10%', cost: '350', icon: '💊' },
+              { name: 'Cinepolis', discount: '2x1', cost: '800', icon: '🍿' },
             ].map((item, i) => (
               <div key={i} className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center hover:shadow-md transition-all cursor-pointer group" onClick={onShowNotEnough}>
                 <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center text-3xl mb-3 border border-gray-100 shadow-inner group-hover:scale-110 transition-transform">
@@ -508,27 +508,24 @@ function RankingScreen({ onBack, manguitos }) {
       {/* Leaderboard List */}
       <div className="px-5 space-y-3 flex-1 pb-44">
         {[
-          { pos: 1, name: 'Manguito', pts: 3000, initial: 'P', color: 'text-[#cd7f32]' },
+          { pos: 1, name: 'Manguito', pts: 3000, initial: 'M', color: 'text-[#cd7f32]' },
           { pos: 2, name: 'Pablo', pts: 2999, initial: 'P', color: 'text-gray-400' },
-          { pos: 3, name: 'Pedro', pts: 2998, initial: 'U', color: 'text-[#8b5a2b]' }
+          { pos: 3, name: 'Pedro', pts: 2998, initial: 'P', color: 'text-[#8b5a2b]' }
         ].map((user, idx) => (
           <div key={idx} className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center shadow-sm">
             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold mr-3 ${idx === 0 ? 'bg-naranja-500' : 'bg-gray-400'}`}>
               {user.pos}
             </div>
 
-            {idx === 2 ? (
-              <div className="w-10 h-10 rounded-full bg-gray-800 mr-3 flex items-center justify-center text-white overflow-hidden opacity-80">
-                <span className="text-xs blur-[2px]">U3</span>
-              </div>
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-gray-200 text-gray-600 font-bold flex items-center justify-center mr-3">
-                {user.initial}
-              </div>
-            )}
+            <div className="w-10 h-10 rounded-full bg-gray-200 text-gray-600 font-bold flex items-center justify-center mr-3">
+              {user.initial}
+            </div>
 
             <span className="font-bold text-gray-800 flex-1">{user.name}</span>
-            <span className="text-gray-600 text-sm font-medium mr-2">{user.pts} pts</span>
+            <div className="flex items-center space-x-1 mr-2">
+              <span className="text-gray-800 font-black text-sm">{user.pts}</span>
+              <span className="text-base">🥭</span>
+            </div>
             <div className="relative">
               <Trophy size={20} className={user.color} strokeWidth={2.5} />
               <span className="absolute inset-0 flex items-center justify-center text-[8px] font-black text-white mt-[1px]">{user.pos}</span>
