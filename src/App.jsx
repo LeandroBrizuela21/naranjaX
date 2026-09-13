@@ -28,12 +28,14 @@ import {
   ShieldCheck,
   Gauge,
   HandCoins,
-  Luggage
+  Luggage,
+  Check
 } from 'lucide-react';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('home');
   const [showMaintenance, setShowMaintenance] = useState(false);
+  const [manguitos, setManguitos] = useState(500);
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 font-sans">
@@ -52,16 +54,18 @@ export default function App() {
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto pb-28 scrollbar-hide">
           {currentScreen === 'home' && (
-            <HomeScreen onNavigate={() => setCurrentScreen('manguitos')} onShowMaintenance={() => setShowMaintenance(true)} />
+            <HomeScreen onNavigate={() => setCurrentScreen('manguitos')} onShowMaintenance={() => setShowMaintenance(true)} manguitos={manguitos} />
           )}
           {currentScreen === 'manguitos' && (
             <ManguitosScreen
               onBack={() => setCurrentScreen('home')}
               onNavigate={(screen) => setCurrentScreen(screen)}
+              manguitos={manguitos}
+              setManguitos={setManguitos}
             />
           )}
           {currentScreen === 'ranking' && (
-            <RankingScreen onBack={() => setCurrentScreen('manguitos')} />
+            <RankingScreen onBack={() => setCurrentScreen('manguitos')} manguitos={manguitos} />
           )}
           {currentScreen === 'mas' && (
             <MasScreen onShowMaintenance={() => setShowMaintenance(true)} />
@@ -121,7 +125,7 @@ export default function App() {
   );
 }
 
-function HomeScreen({ onNavigate, onShowMaintenance }) {
+function HomeScreen({ onNavigate, onShowMaintenance, manguitos }) {
   const [showBalance, setShowBalance] = useState(true);
 
   return (
@@ -200,7 +204,7 @@ function HomeScreen({ onNavigate, onShowMaintenance }) {
           <div className="relative z-10">
             <h3 className="text-purple-900 font-bold text-lg mb-1 tracking-tight">Manguitos</h3>
             <div className="flex items-center space-x-2">
-              <span className="text-[40px] leading-none font-black text-gray-800">500</span>
+              <span className="text-[40px] leading-none font-black text-gray-800">{manguitos}</span>
               <span className="text-3xl filter drop-shadow-sm">🥭</span>
             </div>
           </div>
@@ -241,7 +245,26 @@ function HomeScreen({ onNavigate, onShowMaintenance }) {
   );
 }
 
-function ManguitosScreen({ onBack, onNavigate }) {
+function ManguitosScreen({ onBack, onNavigate, manguitos, setManguitos }) {
+  const [missions, setMissions] = useState([
+    { id: 1, title: 'Pagar con QR', goal: 5000, current: 5000, reward: 5, claimed: false },
+    { id: 2, title: 'Transferir', goal: 10000, current: 4000, reward: 10, claimed: false },
+    { id: 3, title: 'Ingresar dinero', goal: 15000, current: 0, reward: 15, claimed: false },
+  ]);
+  const [animatingId, setAnimatingId] = useState(null);
+
+  const handleClaim = (mission) => {
+    if (mission.current >= mission.goal && !mission.claimed) {
+      setAnimatingId(mission.id);
+      
+      setTimeout(() => {
+        setManguitos(prev => prev + mission.reward);
+        setMissions(missions.map(m => m.id === mission.id ? { ...m, claimed: true } : m));
+        setAnimatingId(null);
+      }, 600);
+    }
+  };
+
   return (
     <div className="animate-in slide-in-from-right-4 duration-300 pb-10">
       {/* Header */}
@@ -268,7 +291,7 @@ function ManguitosScreen({ onBack, onNavigate }) {
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center text-2xl shadow-inner border border-orange-100">🥭</div>
             <div>
-              <span className="text-3xl leading-none font-black text-gray-800 block tracking-tighter">500</span>
+              <span className="text-3xl leading-none font-black text-gray-800 block tracking-tighter transition-all duration-300">{manguitos}</span>
               <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-0.5 block">Manguitos</span>
             </div>
           </div>
@@ -288,28 +311,59 @@ function ManguitosScreen({ onBack, onNavigate }) {
         {/* Missions */}
         <h3 className="text-gray-800 font-black text-lg mb-2 tracking-tight">Misiones</h3>
         <div className="space-y-2 mb-4">
-          {[
-            { goal: 5000, current: 0, reward: 5 },
-            { goal: 10000, current: 4000, reward: 10 },
-            { goal: 15000, current: 0, reward: 15 },
-          ].map((mission, i) => (
-            <div key={i} className="bg-white rounded-[16px] p-2.5 flex items-center shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer">
-              <div className="bg-gray-50 p-2 rounded-xl mr-3 border border-gray-100">
-                <QrCode size={20} className="text-gray-800" strokeWidth={2} />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-black text-gray-800 text-[11px] mb-1 uppercase tracking-wide">Pagar con QR</h4>
-                <div className="w-full bg-gray-200 rounded-full h-1.5 mb-1 overflow-hidden">
-                  <div className="bg-naranja-500 h-full rounded-full transition-all duration-1000" style={{ width: `${Math.max((mission.current / mission.goal) * 100, 5)}%` }}></div>
+          {missions.map((mission) => {
+            const isCompleted = mission.current >= mission.goal;
+            const isAnimating = animatingId === mission.id;
+            
+            return (
+              <div 
+                key={mission.id} 
+                className={`bg-white rounded-[16px] p-2.5 flex items-center shadow-sm border ${isCompleted && !mission.claimed ? 'border-naranja-500/50 hover:shadow-md' : 'border-gray-100'} transition-all cursor-pointer relative overflow-hidden`}
+                onClick={() => handleClaim(mission)}
+              >
+                {isCompleted && !mission.claimed && (
+                  <div className="absolute inset-0 bg-naranja-500/5 animate-pulse"></div>
+                )}
+                
+                <div className={`bg-gray-50 p-2 rounded-xl mr-3 border border-gray-100 relative z-10 ${isCompleted && !mission.claimed ? 'text-naranja-500' : 'text-gray-800'}`}>
+                  <QrCode size={20} strokeWidth={2} />
                 </div>
-                <span className="text-[9px] font-black text-gray-400">{mission.current} / {mission.goal} $</span>
+                <div className="flex-1 relative z-10">
+                  <h4 className="font-black text-gray-800 text-[11px] mb-1 uppercase tracking-wide">{mission.title}</h4>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 mb-1 overflow-hidden">
+                    <div className={`${mission.claimed ? 'bg-green-500' : 'bg-naranja-500'} h-full rounded-full transition-all duration-1000`} style={{ width: `${Math.max((mission.current / mission.goal) * 100, 5)}%` }}></div>
+                  </div>
+                  <span className="text-[9px] font-black text-gray-400">{mission.current} / {mission.goal} $</span>
+                </div>
+                
+                <div className={`ml-3 w-11 h-11 rounded-full flex flex-col items-center justify-center text-white shrink-0 relative z-10 transition-all duration-500 ${
+                  mission.claimed 
+                    ? 'bg-green-500 scale-95' 
+                    : isCompleted 
+                      ? 'bg-naranja-500 shadow-md shadow-naranja-500/40 animate-bounce' 
+                      : 'bg-gray-300'
+                }`}>
+                  {isAnimating ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  ) : mission.claimed ? (
+                    <Check size={20} strokeWidth={3} />
+                  ) : (
+                    <>
+                      <span className="text-[12px] leading-none mb-0.5">🥭</span>
+                      <span className="font-black text-[13px] leading-none">+{mission.reward}</span>
+                    </>
+                  )}
+                </div>
+                
+                {/* Floating mango animation */}
+                {isAnimating && (
+                  <div className="absolute right-4 top-0 animate-[ping_0.6s_cubic-bezier(0,0,0.2,1)_forwards] text-2xl z-20">
+                    🥭
+                  </div>
+                )}
               </div>
-              <div className="ml-3 w-11 h-11 bg-naranja-500 rounded-full flex flex-col items-center justify-center text-white shadow-md shadow-naranja-500/40 shrink-0">
-                <span className="text-[12px] leading-none mb-0.5">🥭</span>
-                <span className="font-black text-[13px] leading-none">+{mission.reward}</span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Benefits Carousel */}
@@ -391,7 +445,7 @@ function ManguitosScreen({ onBack, onNavigate }) {
   );
 }
 
-function RankingScreen({ onBack }) {
+function RankingScreen({ onBack, manguitos }) {
   return (
     <div className="animate-in slide-in-from-right-4 duration-300 bg-white min-h-full pb-8 flex flex-col relative">
       {/* Header */}
@@ -486,7 +540,7 @@ function RankingScreen({ onBack }) {
             <div className="text-right">
               <span className="text-gray-500 text-sm block mb-1">Tu Puntaje</span>
               <div className="flex items-center justify-end space-x-2 mb-1">
-                <span className="text-3xl font-black text-gray-800">500</span>
+                <span className="text-3xl font-black text-gray-800">{manguitos}</span>
                 <div className="w-6 h-6 rounded-full bg-naranja-500 text-white flex items-center justify-center shadow-md">
                   <span className="text-[10px]">🥭</span>
                 </div>
